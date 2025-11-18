@@ -1,0 +1,8 @@
+# Terrabot Navigation System Requirements
+
+# Numerical Computing
+numpy>=1.24.0             # Array operations and mathematical functions
+
+# Optional packages for enhanced functionality
+# scipy>=1.10.0           # Advanced mathematical functions
+# matplotlib>=3.7.0       # Path visualization and debugging

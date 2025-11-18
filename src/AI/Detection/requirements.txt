@@ -1,0 +1,15 @@
+# Terrabot Detection System Requirements
+
+# Deep Learning & Computer Vision
+ultralytics>=8.0.0        # YOLO v8 for object detection
+torch>=2.0.0              # PyTorch for deep learning
+torchvision>=0.15.0       # Computer vision utilities
+opencv-python>=4.8.0      # OpenCV for image processing
+
+# Numerical Computing
+numpy>=1.24.0             # Array operations
+
+# Optional GPU Support
+# Uncomment if using NVIDIA GPU:
+# nvidia-cuda-runtime-cu11  # CUDA runtime
+# nvidia-cudnn-cu11         # cuDNN for GPU acceleration
