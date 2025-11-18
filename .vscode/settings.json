@@ -55,5 +55,11 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "files.associations": {
+    "iostream": "cpp",
+    "thread": "cpp",
+    "chrono": "cpp"
+  },
+  "cmake.sourceDirectory": "C:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/src/mainframe"
 }

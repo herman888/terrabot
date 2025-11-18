@@ -15,6 +15,19 @@
 #include <memory>
 #include <queue>
 #include <mutex>
+#include <string>
+
+// Platform-specific socket headers
+#ifdef _WIN32
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
+    #pragma comment(lib, "ws2_32.lib")
+#else
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    #include <unistd.h>
+#endif
 
 // Forward declarations for modular components
 class VisionInterface;
@@ -46,16 +59,54 @@ struct RobotState {
 
 /*
  * VisionInterface Class
- * Handles communication with Python-based YOLO detection system
+ * Handles communication with Python-based snow detection system
+ * Receives detection data via TCP socket connection
  */
 class VisionInterface {
 public:
-    VisionInterface() : running_(false) {}
+    VisionInterface() : running_(false), server_socket_(-1), client_socket_(-1), port_(5555) {}
     
     void initialize() {
         std::cout << "[Vision] Initializing computer vision interface..." << std::endl;
-        // TODO: Initialize communication with Python YOLO detection module
-        // TODO: Set up shared memory or socket communication
+        
+        // Initialize socket server for Python detector connection
+        #ifdef _WIN32
+            WSADATA wsa_data;
+            if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0) {
+                std::cerr << "[Vision] WSAStartup failed" << std::endl;
+                return;
+            }
+        #endif
+        
+        // Create socket
+        server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
+        if (server_socket_ < 0) {
+            std::cerr << "[Vision] Failed to create socket" << std::endl;
+            return;
+        }
+        
+        // Set socket options
+        int opt = 1;
+        setsockopt(server_socket_, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt));
+        
+        // Bind socket
+        sockaddr_in server_addr{};
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = INADDR_ANY;
+        server_addr.sin_port = htons(port_);
+        
+        if (bind(server_socket_, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+            std::cerr << "[Vision] Failed to bind socket on port " << port_ << std::endl;
+            return;
+        }
+        
+        // Listen for connections
+        if (listen(server_socket_, 1) < 0) {
+            std::cerr << "[Vision] Failed to listen on socket" << std::endl;
+            return;
+        }
+        
+        std::cout << "[Vision] Socket server listening on port " << port_ << std::endl;
     }
     
     void start() {
@@ -66,9 +117,31 @@ public:
     
     void stop() {
         running_ = false;
+        
+        // Close sockets
+        if (client_socket_ >= 0) {
+            #ifdef _WIN32
+                closesocket(client_socket_);
+            #else
+                close(client_socket_);
+            #endif
+        }
+        if (server_socket_ >= 0) {
+            #ifdef _WIN32
+                closesocket(server_socket_);
+            #else
+                close(server_socket_);
+            #endif
+        }
+        
         if (vision_thread_.joinable()) {
             vision_thread_.join();
         }
+        
+        #ifdef _WIN32
+            WSACleanup();
+        #endif
+        
         std::cout << "[Vision] Vision processing stopped" << std::endl;
     }
     
@@ -82,15 +155,81 @@ public:
         return false;
     }
     
+    int getDetectionCount() {
+        std::lock_guard<std::mutex> lock(detection_mutex_);
+        return detection_queue_.size();
+    }
+    
 private:
     void processVisionData() {
+        std::cout << "[Vision] Waiting for Python detector connection..." << std::endl;
+        
+        // Accept connection from Python detector
+        sockaddr_in client_addr{};
+        socklen_t client_len = sizeof(client_addr);
+        client_socket_ = accept(server_socket_, (sockaddr*)&client_addr, &client_len);
+        
+        if (client_socket_ < 0) {
+            std::cerr << "[Vision] Failed to accept connection" << std::endl;
+            return;
+        }
+        
+        std::cout << "[Vision] Python detector connected!" << std::endl;
+        
+        char buffer[4096];
+        std::string accumulated_data;
+        
         while (running_) {
-            // TODO: Receive detection data from Python module
-            // TODO: Parse YOLO detection results
-            // TODO: Filter and validate detections
+            // Receive data from Python detector
+            int bytes_received = recv(client_socket_, buffer, sizeof(buffer) - 1, 0);
             
-            // Placeholder for detection processing
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (bytes_received <= 0) {
+                std::cerr << "[Vision] Connection lost or error" << std::endl;
+                break;
+            }
+            
+            buffer[bytes_received] = '\0';
+            accumulated_data += buffer;
+            
+            // Process complete JSON messages (delimited by newline)
+            size_t pos;
+            while ((pos = accumulated_data.find('\n')) != std::string::npos) {
+                std::string json_message = accumulated_data.substr(0, pos);
+                accumulated_data.erase(0, pos + 1);
+                
+                // Parse JSON and add to detection queue
+                parseDetections(json_message);
+            }
+        }
+    }
+    
+    void parseDetections(const std::string& json_str) {
+        // Simple JSON parsing (in production, use a JSON library like nlohmann/json)
+        // For now, basic parsing for the detection format
+        
+        // Expected format: [{"x": 0.5, "y": 0.5, "width": 0.1, "height": 0.1, "confidence": 0.9, "timestamp": 123456}]
+        
+        std::lock_guard<std::mutex> lock(detection_mutex_);
+        
+        // TODO: Implement proper JSON parsing
+        // This is a placeholder - in production use nlohmann/json or similar
+        std::cout << "[Vision] Received detections (raw): " << json_str.substr(0, 100) << "..." << std::endl;
+        
+        // For demonstration, create a dummy detection when data is received
+        // In production, properly parse the JSON
+        SnowDetection detection;
+        detection.x = 0.5;
+        detection.y = 0.5;
+        detection.width = 0.1;
+        detection.height = 0.1;
+        detection.confidence = 0.8;
+        detection.timestamp = std::chrono::system_clock::now().time_since_epoch().count();
+        
+        detection_queue_.push(detection);
+        
+        // Limit queue size
+        while (detection_queue_.size() > 100) {
+            detection_queue_.pop();
         }
     }
     
@@ -98,6 +237,10 @@ private:
     std::atomic<bool> running_;
     std::queue<SnowDetection> detection_queue_;
     std::mutex detection_mutex_;
+    
+    int server_socket_;
+    int client_socket_;
+    int port_;
 };
 
 /*

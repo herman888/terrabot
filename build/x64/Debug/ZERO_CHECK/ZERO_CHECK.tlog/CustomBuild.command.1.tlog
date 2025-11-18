@@ -1,0 +1,10 @@
+^C:\USERS\THEWI\ONEDRIVE - YORK UNIVERSITY\YORKU\EXTRACURRICULAR\TERRABOT\CODEBASE\TERRABOT\BUILD\CMAKEFILES\D6F715D01286EBCC2215235444DFCF5B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" "-SC:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/src/mainframe" "-BC:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/build/TerrabotMainframe.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

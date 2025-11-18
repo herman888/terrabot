@@ -1,0 +1,3 @@
+C:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/build/CMakeFiles/terrabot_mainframe.dir
+C:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/thewi/OneDrive - York University/YorkU/Extracurricular/Terrabot/codebase/terrabot/build/CMakeFiles/ZERO_CHECK.dir
