@@ -1,102 +1,102 @@
 # Build directories
-# build/
-#  bin/
-# out/
+build/
+bin/
+out/
 
 # CMake
-# CMakeCache.txt
-# CMakeFiles/
-# CMakeScripts/
-# cmake_install.cmake
-# install_manifest.txt
-# compile_commands.json
-# CTestTestfile.cmake
-# _deps
-# .cmake/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+.cmake/
 
 # Visual Studio
-# .vs/
-# *.vcxproj
-# *.vcxproj.filters
-# *.vcxproj.user
-# *.sln
-# *.suo
-# *.user
-# *.userosscache
-# *.sln.docstates
-# *.ilk
-# *.exe.recipe
-# *.recipe
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ilk
+*.exe.recipe
+*.recipe
 
 # Visual Studio Code
-# .vscode/
-# *.code-workspace
+.vscode/
+*.code-workspace
 
 # Compiled Object files
-# *.slo
-# *.lo
-# *.o
-# *.obj
+*.slo
+*.lo
+*.o
+*.obj
 
 # Precompiled Headers
-# *.gch
-# *.pch
+*.gch
+*.pch
 
 # Compiled Dynamic libraries
-# *.so
-# *.dylib
-# *.dll
+*.so
+*.dylib
+*.dll
 
 # Fortran module files
-# *.mod
-# *.smod
+*.mod
+*.smod
 
 # Compiled Static libraries
-# *.lai
-# *.la
-# *.a
-# *.lib
+*.lai
+*.la
+*.a
+*.lib
 
 # Executables
-# *.exe
-# *.out
-# *.app
+*.exe
+*.out
+*.app
 
 # Python
-# __pycache__/
-# *.py[cod]
-# *$py.class
-# *.so
-# .Python
-# env/
-# venv/
-# ENV/
-# .venv
-# pip-log.txt
-# pip-delete-this-directory.txt
-# .pytest_cache/
-# *.egg-info/
-# dist/
-# *.egg
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.egg-info/
+dist/
+*.egg
 
 # Jupyter Notebook
-# .ipynb_checkpoints
+.ipynb_checkpoints
 
 # OS
-# .DS_Store
-# Thumbs.db
-# desktop.ini
+.DS_Store
+Thumbs.db
+desktop.ini
 
 # IDE
-# *.swp
-# *.swo
-# *~
-# .idea/
+*.swp
+*.swo
+*~
+.idea/
 
 # Logs
-# *.log
+*.log
 
 # Temporary files
-# *.tmp
-# *.temp
-# *.bak
+*.tmp
+*.temp
+*.bak
